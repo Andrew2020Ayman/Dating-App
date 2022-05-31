@@ -1,0 +1,14 @@
+.dropdown-toggle, .dropdown-item {
+  cursor: pointer;
+}
+.navbar-brand{
+  color: #E55451;
+}
+.navbar{
+  position: sticky;
+}
+.profileImg{
+  max-height: 50px;
+  border: 2px solid white;
+  display: inline;
+}

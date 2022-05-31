@@ -16,6 +16,13 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using DatingApp.API.Helpers;
+using Newtonsoft.Json;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Certificate;
 
 namespace DatingApp.API
 {
@@ -32,10 +39,28 @@ namespace DatingApp.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+          
+          /*  services.AddMvc().AddNewtonsoftJson(o => 
+                {
+                    o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });  */  
             services.AddControllers();
             services.AddCors();
-            services.AddScoped<IAuthRepository,AuthRepository>();
+            services.AddTransient<Seed>();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
 
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+
+           services.AddControllers().AddNewtonsoftJson(opt => {
+                opt.SerializerSettings.ReferenceLoopHandling = 
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            services.AddAuthentication(
+                    CertificateAuthenticationDefaults.AuthenticationScheme)
+                    .AddCertificate();
+            services.AddScoped<IAuthRepository,AuthRepository>();
+            services.AddScoped<IDatingRepository,DatingRepository>();
               services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                   .AddJwtBearer(options =>
                   {
@@ -54,7 +79,7 @@ namespace DatingApp.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Seed seeder)
         {
             if (env.IsDevelopment())
             {
@@ -62,16 +87,30 @@ namespace DatingApp.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DatingApp.API v1"));
             }
+            else{
+                app.UseExceptionHandler(builder =>{
+                    builder.Run(async context=>{
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; 
 
-            app.UseHttpsRedirection();
+                        var error =  context.Features.Get<IExceptionHandlerFeature>();  
+                        if(error != null){
+                            context.Response.AddApplcationError(error.Error.Message);
+                            await context.Response.WriteAsync(error.Error.Message);
+                        }
+                    });
+                });
+            }
 
+           // app.UseHttpsRedirection();
+          
             app.UseRouting();
-
-            app.UseAuthorization();
-            
+            //seeder.SeedUsers();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            
+
             app.UseAuthentication();
+            app.UseAuthorization();
+
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
