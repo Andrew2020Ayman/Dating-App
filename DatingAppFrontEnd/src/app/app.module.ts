@@ -13,6 +13,8 @@ import { ErrorInterceptorProvider } from './_Servcies/error.interceptor';
 import { AlertifyService } from './_Servcies/alertify.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+
+
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MemberListComponent } from './members/member-list/member-list.component';
@@ -34,6 +36,13 @@ import { PhotoEditorComponent } from './members/photo-editor/photo-editor.compon
 import { FileUploadModule } from 'ng2-file-upload';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { RouterModule } from '@angular/router';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+
+import { TimeagoModule } from 'ngx-timeago';
+import { ListResolver } from './_resolvers/lists.resolver';
+import { MessagesResolver } from './_resolvers/messages.resolver';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 
 export function tokenGetter(){
    return localStorage.getItem('token');
@@ -45,13 +54,14 @@ export function tokenGetter(){
     NavComponent,
     HomeComponent,
     RegisterComponent,
-      MemberListComponent,
-      ListsComponent,
-      MessagesComponent,
-      MemberCardComponent,
-      MemberDetailComponent,
-      MemberEditComponent,
-      PhotoEditorComponent
+    MemberListComponent,
+    ListsComponent,
+    MessagesComponent,
+    MemberCardComponent,
+    MemberDetailComponent,
+     MemberEditComponent,
+    PhotoEditorComponent,
+    MemberMessagesComponent
    ],
   imports: [
     BrowserModule,
@@ -64,9 +74,11 @@ export function tokenGetter(){
     NgxGalleryModule,
     FileUploadModule,
     ReactiveFormsModule,
+    TimeagoModule.forRoot(),
     RouterModule,
     TabsModule.forRoot(),
-
+    PaginationModule.forRoot(),
+    ButtonsModule.forRoot(),
     JwtModule.forRoot({
       config:{
         tokenGetter:tokenGetter,
@@ -85,7 +97,9 @@ export function tokenGetter(){
     MemberDetailResolver,
     MemberListResolver,
     MemberEditResolver,
-    PreventUnsavedChanges
+    PreventUnsavedChanges,
+    ListResolver,
+    MessagesResolver
   ],
   bootstrap: [AppComponent]
 })

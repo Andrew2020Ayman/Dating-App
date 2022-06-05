@@ -7,16 +7,17 @@ import { AlertifyService } from "../_Servcies/alertify.service";
 import { UserService } from "../_Servcies/user.service";
 
 @Injectable()
-export class MemberListResolver implements Resolve<User[]>{
+export class ListResolver implements Resolve<User[]>{
 
   pageNumber = 1;
   PageSize = 5;
+  likesParams = 'likers';
 
   constructor(private userService:UserService , private router:Router ,
               private alertify:AlertifyService){}
 
     resolve(route: ActivatedRouteSnapshot):Observable<User[]>{
-      return this.userService.getUsers(this.pageNumber,this.PageSize).pipe(
+      return this.userService.getUsers(this.pageNumber,this.PageSize,null,this.likesParams).pipe(
         catchError(error=>{
           this.alertify.error('Problem retrieving data');
           this.router.navigate(['/home']);

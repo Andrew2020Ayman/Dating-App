@@ -48,7 +48,6 @@ namespace DatingApp.API
             services.AddCors();
             services.AddTransient<Seed>();
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
-
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
 
            services.AddControllers().AddNewtonsoftJson(opt => {
@@ -61,6 +60,7 @@ namespace DatingApp.API
                     .AddCertificate();
             services.AddScoped<IAuthRepository,AuthRepository>();
             services.AddScoped<IDatingRepository,DatingRepository>();
+            services.AddScoped<LogUserActivity>();
               services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                   .AddJwtBearer(options =>
                   {

@@ -3,14 +3,16 @@ using System;
 using DatingApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DatingApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220601115051_AddLikeEntity")]
+    partial class AddLikeEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,45 +31,6 @@ namespace DatingApp.API.Migrations
                     b.HasIndex("LikeeId");
 
                     b.ToTable("Likes");
-                });
-
-            modelBuilder.Entity("DatingApp.API.models.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DateRead")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("MessageSent")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("RecipientDeleted")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RecipientId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("SenderDeleted")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipientId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DatingApp.API.models.Photo", b =>
@@ -168,13 +131,13 @@ namespace DatingApp.API.Migrations
             modelBuilder.Entity("DatingApp.API.models.Like", b =>
                 {
                     b.HasOne("DatingApp.API.models.User", "Likee")
-                        .WithMany("Likers")
+                        .WithMany("Liker")
                         .HasForeignKey("LikeeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("DatingApp.API.models.User", "Liker")
-                        .WithMany("Likees")
+                        .WithMany("Likee")
                         .HasForeignKey("LikerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -182,25 +145,6 @@ namespace DatingApp.API.Migrations
                     b.Navigation("Likee");
 
                     b.Navigation("Liker");
-                });
-
-            modelBuilder.Entity("DatingApp.API.models.Message", b =>
-                {
-                    b.HasOne("DatingApp.API.models.User", "Recipient")
-                        .WithMany("MessagesReceived")
-                        .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DatingApp.API.models.User", "Sender")
-                        .WithMany("MessagesSent")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Recipient");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("DatingApp.API.models.Photo", b =>
@@ -216,13 +160,9 @@ namespace DatingApp.API.Migrations
 
             modelBuilder.Entity("DatingApp.API.models.User", b =>
                 {
-                    b.Navigation("Likees");
+                    b.Navigation("Likee");
 
-                    b.Navigation("Likers");
-
-                    b.Navigation("MessagesReceived");
-
-                    b.Navigation("MessagesSent");
+                    b.Navigation("Liker");
 
                     b.Navigation("Photos");
                 });
