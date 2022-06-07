@@ -6,8 +6,8 @@ import { environment } from 'src/environments/environment';
 import { Message } from '../_models/message';
 import { PaginationResult } from '../_models/pagination';
 import { User } from '../_models/user';
-/*
-const httpOptions ={
+
+/* const httpOptions ={
   headers: new HttpHeaders({
    'Authorization':'Bearer '+ localStorage.getItem('token')
   })
@@ -89,7 +89,7 @@ constructor(private http : HttpClient) { }
        );
   }
   getMessageThread(id:number, recipientId:number){
-    return this.http.get<Message[]>(this.baseUrl+'users/'+id+'/Messages/thread/'+ recipientId);
+    return this.http.get<Message[]>(this.baseUrl+'users/'+id+'/Messages/thread/'+ recipientId );
   }
 
   sendMessage(id:number,message:Message){

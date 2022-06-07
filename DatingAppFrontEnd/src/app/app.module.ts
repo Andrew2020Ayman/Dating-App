@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -43,6 +43,7 @@ import { TimeagoModule } from 'ngx-timeago';
 import { ListResolver } from './_resolvers/lists.resolver';
 import { MessagesResolver } from './_resolvers/messages.resolver';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
+import { AuthInterceptor } from './_intersptors/user-intersptor';
 
 export function tokenGetter(){
    return localStorage.getItem('token');
@@ -82,8 +83,8 @@ export function tokenGetter(){
     JwtModule.forRoot({
       config:{
         tokenGetter:tokenGetter,
-        allowedDomains:['localhost:5001'],
-        disallowedRoutes:['localhost:5001/api/auth']
+        allowedDomains:['localhost:5001','http://andrew2022-001-site1.btempurl.com'],
+        disallowedRoutes:['localhost:5001/api/auth','http://andrew2022-001-site1.btempurl.com/api/auth']
       },
 
     })
@@ -99,7 +100,12 @@ export function tokenGetter(){
     MemberEditResolver,
     PreventUnsavedChanges,
     ListResolver,
-    MessagesResolver
+    MessagesResolver,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
